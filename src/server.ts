@@ -2,11 +2,12 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
+import cookieParser from "cookie-parser";
 import { notFound } from "./controllers/notFoundController";
-import testRoutes from "./routes/exampleRoutes";
-import { helloMiddleware } from "./middleware/exampleMiddleware";
+import authRoutes from "./routes/authRoutes";
+import entryRoutes from "./routes/entryRoutes";
 import mongoose from "mongoose";
-
+import { isAuth } from "./middleware/authMiddleware";
 // Variables
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,9 +15,13 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
-app.use("/api", helloMiddleware, testRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/entries", isAuth, entryRoutes);
+
+// 404 handler
 app.all("*", notFound);
 
 // Database connection

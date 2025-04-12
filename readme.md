@@ -1,71 +1,73 @@
-# Node, Express and TypeScript Project Template
+# Boost Me Up - Backend API
 
-Welcome to the **Node, Express and TypeScript Project Template**! This repository serves as a starter template for building Node.js applications with TypeScript. It comes pre-configured with models, controllers, routes, and bundling, so you can focus on building your application.
+A Node.js backend API built with Express, TypeScript, and MongoDB, featuring authentication and user management.
+
+This API powers a positive reinforcement web application where users can record and reflect on their daily achievements and positive actions. By documenting these positive moments, users can combat negative self-perception and build a more balanced view of their accomplishments and personal growth.
 
 ## Features
 
-- **TypeScript**: Strongly typed language for writing robust and maintainable code.
-- **Project Structure**: Organized folder structure with models, controllers, and routes.
-- **Bundling pkgroll**: Pre-configured with a bundler for efficient builds.
-- **TSX**: For automatic server restarts an running typescript during development.
-- **Dependency Management**: Configured with npm.
+- **TypeScript**: Strongly typed language for writing robust and maintainable code
+- **Express.js**: Fast, unopinionated web framework for Node.js
+- **MongoDB**: NoSQL database with Mongoose ODM
+- **Authentication**: JWT-based authentication with bcrypt password hashing
+- **Security**: CORS enabled, cookie-parser for secure session management
+- **Environment Configuration**: Dotenv for environment variable management
+- **Development Tools**:
+  - TSX for TypeScript execution and hot-reloading
+  - Pkgroll for efficient bundling and minification
 
 ## Project Structure
 
 ```
-├── src
-│   ├── controllers
-│   │   └── exampleController.ts
-│   ├── middleware
-│   │   └── exampleMiddleware.ts
-│   ├── models
-│   │   └── exampleModel.ts
-│   ├── routes
-│   │   └── exampleRoutes.ts
-│   └── server.ts    // Main entry point of the application
-├── dist             // Compiled output (auto-generated)
-├── package.json     // Project dependencies and scripts
-├──.gitignore        // Ignore files to github
-├── tsconfig.json    // TypeScript configuration
-└── README.md        // Project documentation
+├── src/
+│   ├── controllers/     # Request handlers and business logic
+│   ├── middleware/      # Custom middleware functions
+│   ├── models/          # Database models and schemas
+│   ├── routes/          # API route definitions
+│   ├── types/           # TypeScript type definitions
+│   ├── utils/           # Utility functions and helpers
+│   └── server.ts        # Main application entry point
+├── .env                 # Environment variables
+├── package.json         # Project dependencies and scripts
+├── tsconfig.json        # TypeScript configuration
+└── .gitignore          # Git ignore rules
 ```
 
-## Getting Started
+## API Documentation
 
-### 1. Start Development Server
+The API documentation is available at `/api-docs` when running the server.
 
-Run the development server with hot-reloading:
+## Dependencies
 
-```bash
-npm run dev
-```
+### Core Dependencies
 
-### 2. Build the Project
+- express: Web framework
+- mongoose: MongoDB ODM
+- jsonwebtoken: JWT authentication
+- bcrypt: Password hashing
+- cors: Cross-Origin Resource Sharing
+- cookie-parser: Cookie parsing middleware
+- dotenv: Environment variable management
 
-Compile TypeScript files to JavaScript:
+### Development Dependencies
 
-```bash
-npm run build
-```
-
-### 3. Start the Production Server
-
-After building the project, start the server:
-
-```bash
-npm start
-```
-
-## Scripts
-
-- `dev`: Starts the development server with hot-reloading.
-- `build`: Compiles the TypeScript source code to JavaScript.
-- `start`: Starts the production server.
+- typescript: TypeScript compiler
+- tsx: TypeScript execution
+- pkgroll: Bundling and minification
+- @types/\*: TypeScript type definitions
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the MIT License - see the LICENSE file for details.
 
----
+## Contributing
 
-Happy coding! 🎉
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Support
+
+For support, please open an issue in the GitHub repository or contact me.
