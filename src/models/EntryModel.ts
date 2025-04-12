@@ -6,6 +6,7 @@ const entrySchema = new mongoose.Schema(
     content: { type: String, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     isPrivate: { type: Boolean, default: true },
+    originalContent: { type: String, required: true }, // Store original content temporarily
   },
   { timestamps: true }
 );

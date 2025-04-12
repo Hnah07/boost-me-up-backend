@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import Entry from "../models/EntryModel";
-import bcrypt from "bcrypt";
 import { Types } from "mongoose";
 
 interface SanitizedEntry {
   _id: Types.ObjectId;
+  content: string;
   user: Types.ObjectId;
   isPrivate: boolean;
   createdAt: Date;
@@ -23,12 +23,16 @@ export const createEntry = async (req: Request, res: Response) => {
 
     const entry = await Entry.create({
       content,
+      originalContent: content, // Store original content
       user: userId,
       isPrivate: true,
     });
 
-    // Return entry without the hashed content
-    const sanitizedEntry = entry.toObject() as SanitizedEntry;
+    // Return entry with original content
+    const sanitizedEntry = {
+      ...entry.toObject(),
+      content: entry.originalContent, // Use original content in response
+    } as SanitizedEntry;
 
     res.status(201).json(sanitizedEntry);
   } catch (error) {
@@ -47,9 +51,12 @@ export const getUserEntries = async (req: Request, res: Response) => {
 
     const entries = await Entry.find({ user: userId }).sort({ createdAt: -1 });
 
-    // Return entries without the hashed content
+    // Return entries with original content
     const sanitizedEntries = entries.map((entry) => {
-      const sanitized = entry.toObject() as SanitizedEntry;
+      const sanitized = {
+        ...entry.toObject(),
+        content: entry.originalContent, // Use original content in response
+      } as SanitizedEntry;
       return sanitized;
     });
 
@@ -75,8 +82,11 @@ export const getEntry = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Entry not found" });
     }
 
-    // Return entry without the hashed content
-    const sanitizedEntry = entry.toObject() as SanitizedEntry;
+    // Return entry with original content
+    const sanitizedEntry = {
+      ...entry.toObject(),
+      content: entry.originalContent, // Use original content in response
+    } as SanitizedEntry;
 
     res.json(sanitizedEntry);
   } catch (error) {
@@ -97,7 +107,10 @@ export const updateEntry = async (req: Request, res: Response) => {
 
     const entry = await Entry.findOneAndUpdate(
       { _id: id, user: userId },
-      { content },
+      {
+        content,
+        originalContent: content, // Update original content
+      },
       { new: true }
     );
 
@@ -105,8 +118,11 @@ export const updateEntry = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Entry not found" });
     }
 
-    // Return entry without the hashed content
-    const sanitizedEntry = entry.toObject() as SanitizedEntry;
+    // Return entry with original content
+    const sanitizedEntry = {
+      ...entry.toObject(),
+      content: entry.originalContent, // Use original content in response
+    } as SanitizedEntry;
 
     res.json(sanitizedEntry);
   } catch (error) {
