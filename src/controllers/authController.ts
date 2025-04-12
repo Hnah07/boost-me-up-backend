@@ -131,16 +131,33 @@ export const logout = async (req: Request, res: Response) => {
     }
   }
 };
+// Example backend code (authController.js or similar)
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    // The user is already attached to the request by the auth middleware
-    const user = req.user;
-    res.status(200).json({ user });
+    // Get the user from the database using the authenticated user's ID
+    const user = await User.findById(req.user?._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Send the user data including username
+    res.json({
+      user: {
+        _id: user._id,
+        username: user.username, // Make sure this is included
+        email: user.email,
+      },
+    });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      res.status(500).json({ message: error.message });
+      res
+        .status(500)
+        .json({ message: "Error fetching profile", error: error.message });
     } else {
-      res.status(500).json({ message: "Something went wrong" });
+      res
+        .status(500)
+        .json({ message: "Error fetching profile", error: "Unknown error" });
     }
   }
 };
