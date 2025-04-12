@@ -131,3 +131,16 @@ export const logout = async (req: Request, res: Response) => {
     }
   }
 };
+export const getProfile = async (req: Request, res: Response) => {
+  try {
+    // The user is already attached to the request by the auth middleware
+    const user = req.user;
+    res.status(200).json({ user });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Something went wrong" });
+    }
+  }
+};

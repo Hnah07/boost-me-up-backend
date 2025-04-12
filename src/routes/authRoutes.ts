@@ -1,5 +1,11 @@
 import express from "express";
-import { login, logout, register } from "../controllers/authController";
+import {
+  getProfile,
+  login,
+  logout,
+  register,
+} from "../controllers/authController";
+import { isAuth } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
@@ -121,5 +127,6 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
+router.get("/profile", isAuth, getProfile);
 
 export default router;
