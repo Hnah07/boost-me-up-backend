@@ -114,6 +114,7 @@ export const login = async (req: Request, res: Response) => {
         email: user.email,
         username: user.username,
       },
+      token: token,
     });
     return;
   } catch (error: unknown) {
