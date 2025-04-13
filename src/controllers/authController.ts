@@ -103,13 +103,23 @@ export const login = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(200).json({ message: "User logged in successfully" });
+    res.status(200).json({
+      message: "User logged in successfully",
+      user: {
+        _id: user._id,
+        email: user.email,
+        username: user.username,
+      },
+    });
+    return;
   } catch (error: unknown) {
+    console.error("Login error:", error);
     if (error instanceof Error) {
       res.status(500).json({ message: error.message });
-    } else {
-      res.status(500).json({ message: "Something went wrong" });
+      return;
     }
+    res.status(500).json({ message: "Something went wrong" });
+    return;
   }
 };
 
@@ -117,7 +127,7 @@ export const logout = async (req: Request, res: Response) => {
   try {
     res.cookie("token", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production" ? true : false,
+      secure: true,
       sameSite: "none",
       maxAge: 1,
     });
@@ -138,7 +148,8 @@ export const getProfile = async (req: Request, res: Response) => {
     const user = await User.findById(req.user?._id).select("-password");
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
+      return;
     }
 
     // Send the user data including username
