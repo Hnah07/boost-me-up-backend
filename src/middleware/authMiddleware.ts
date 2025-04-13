@@ -10,7 +10,17 @@ export const isAuth = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.cookies.token;
+    // Try to get token from cookie first
+    let token = req.cookies.token;
+
+    // If no cookie, try Authorization header
+    if (!token && req.headers.authorization) {
+      const authHeader = req.headers.authorization;
+      if (authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
+      }
+    }
+
     if (!token) {
       res.status(401).json({ message: "Unauthorized - No token provided" });
       return;
@@ -30,7 +40,7 @@ export const isAuth = async (
     req.user = {
       _id: decoded._id,
       email: decoded.email,
-      name: decoded.name
+      name: decoded.name,
     };
 
     next();
