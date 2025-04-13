@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 
 interface IEntry extends mongoose.Document {
   content: string;
-  _originalContent: string; // Temporary field for storing original content
   user: mongoose.Types.ObjectId;
   isPrivate: boolean;
   createdAt: Date;
@@ -15,16 +14,6 @@ const entrySchema = new mongoose.Schema<IEntry>(
     content: {
       type: String,
       required: true,
-      get: function (this: IEntry) {
-        // Return the original content when getting
-        return this._originalContent;
-      },
-      set: function (this: IEntry, value: string) {
-        // Store the original content in a temporary field
-        this._originalContent = value;
-        // Return the hashed content to be stored in the database
-        return bcrypt.hashSync(value, 10);
-      },
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,13 +27,37 @@ const entrySchema = new mongoose.Schema<IEntry>(
   },
   {
     timestamps: true,
-    toJSON: { getters: true }, // Include getters when converting to JSON
-    toObject: { getters: true }, // Include getters when converting to plain object
   }
 );
 
 // Add an index to optimize queries by user
 entrySchema.index({ user: 1 });
+
+// Pre-save middleware to hash the content
+entrySchema.pre("save", function (next) {
+  if (this.isModified("content")) {
+    const originalContent = this.content;
+    this.content = bcrypt.hashSync(originalContent, 10);
+    // Store original content in a virtual field
+    (this as any)._originalContent = originalContent;
+  }
+  next();
+});
+
+// Post-find middleware to restore original content
+entrySchema.post("find", function (docs) {
+  docs.forEach((doc: any) => {
+    if (doc._originalContent) {
+      doc.content = doc._originalContent;
+    }
+  });
+});
+
+entrySchema.post("findOne", function (doc: any) {
+  if (doc && doc._originalContent) {
+    doc.content = doc._originalContent;
+  }
+});
 
 const Entry = mongoose.model<IEntry>("Entry", entrySchema);
 
