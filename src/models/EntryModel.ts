@@ -7,7 +7,6 @@ interface IEntry extends mongoose.Document {
   isPrivate: boolean;
   createdAt: Date;
   updatedAt: Date;
-  getOriginalContent(): string;
   _originalContent?: string;
 }
 
@@ -29,23 +28,27 @@ const entrySchema = new mongoose.Schema<IEntry>(
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toJSON: {
+      transform: function (doc, ret) {
+        if (doc._originalContent) {
+          ret.content = doc._originalContent;
+        }
+        return ret;
+      },
+    },
+    toObject: {
+      transform: function (doc, ret) {
+        if (doc._originalContent) {
+          ret.content = doc._originalContent;
+        }
+        return ret;
+      },
+    },
   }
 );
 
 // Add an index to optimize queries by user
 entrySchema.index({ user: 1 });
-
-// Virtual for original content
-entrySchema.virtual("originalContent").get(function () {
-  return this._originalContent;
-});
-
-// Method to get original content
-entrySchema.methods.getOriginalContent = function () {
-  return this._originalContent;
-};
 
 // Pre-save middleware to hash the content
 entrySchema.pre("save", function (next) {
