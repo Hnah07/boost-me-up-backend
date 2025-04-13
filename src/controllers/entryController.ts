@@ -23,7 +23,7 @@ export const createEntry = async (req: Request, res: Response) => {
 
     const entry = await Entry.create({
       content,
-      originalContent: content, // Store original content
+      _originalContent: content,
       user: userId,
       isPrivate: true,
     });
@@ -31,7 +31,7 @@ export const createEntry = async (req: Request, res: Response) => {
     // Return entry with original content
     const sanitizedEntry = {
       ...entry.toObject(),
-      content: entry.originalContent, // Use original content in response
+      content: entry._originalContent,
     } as SanitizedEntry;
 
     res.status(201).json(sanitizedEntry);
@@ -84,7 +84,7 @@ export const getEntry = async (req: Request, res: Response) => {
     // Return entry with original content
     const sanitizedEntry = {
       ...entry.toObject(),
-      content: entry.originalContent, // Use original content in response
+      content: entry._originalContent,
     } as SanitizedEntry;
 
     res.json(sanitizedEntry);
@@ -108,7 +108,7 @@ export const updateEntry = async (req: Request, res: Response) => {
       { _id: id, user: userId },
       {
         content,
-        originalContent: content, // Update original content
+        _originalContent: content,
       },
       { new: true }
     );
@@ -120,7 +120,7 @@ export const updateEntry = async (req: Request, res: Response) => {
     // Return entry with original content
     const sanitizedEntry = {
       ...entry.toObject(),
-      content: entry.originalContent, // Use original content in response
+      content: entry._originalContent,
     } as SanitizedEntry;
 
     res.json(sanitizedEntry);
