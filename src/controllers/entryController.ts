@@ -49,14 +49,13 @@ export const getUserEntries = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    const entries = await Entry.find({ user: userId }).sort({ createdAt: -1 });
+    const entries = await Entry.find({ user: userId })
+      .sort({ createdAt: -1 }) // -1 for descending order (newest first)
+      .exec();
 
-    // Return entries with original content
+    // Return entries without the hashed content
     const sanitizedEntries = entries.map((entry) => {
-      const sanitized = {
-        ...entry.toObject(),
-        content: entry.originalContent, // Use original content in response
-      } as SanitizedEntry;
+      const sanitized = entry.toObject() as SanitizedEntry;
       return sanitized;
     });
 
