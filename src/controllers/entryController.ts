@@ -47,14 +47,10 @@ export const getUserEntries = async (req: Request, res: Response) => {
 
     const entries = await Entry.find({ user: userId })
       .sort({ createdAt: -1 }) // -1 for descending order (newest first)
+      .lean() // Convert to plain JavaScript objects
       .exec();
 
-    // The getter will automatically return the original content
-    const sanitizedEntries = entries.map(
-      (entry) => entry.toObject() as SanitizedEntry
-    );
-
-    res.json(sanitizedEntries);
+    res.json(entries);
   } catch (error) {
     res.status(500).json({ message: "Error fetching entries", error });
   }
