@@ -42,6 +42,7 @@ export const register = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      domain: "api.boostmeup.hannahc.be",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -100,6 +101,7 @@ export const login = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      domain: "api.boostmeup.hannahc.be",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -129,6 +131,7 @@ export const logout = async (req: Request, res: Response) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      domain: "api.boostmeup.hannahc.be",
       maxAge: 1,
     });
 
