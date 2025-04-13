@@ -23,16 +23,12 @@ export const createEntry = async (req: Request, res: Response) => {
 
     const entry = await Entry.create({
       content,
-      _originalContent: content,
       user: userId,
       isPrivate: true,
     });
 
-    // Return entry with original content
-    const sanitizedEntry = {
-      ...entry.toObject(),
-      content: entry._originalContent,
-    } as SanitizedEntry;
+    // The getter will automatically return the original content
+    const sanitizedEntry = entry.toObject() as SanitizedEntry;
 
     res.status(201).json(sanitizedEntry);
   } catch (error) {
@@ -53,11 +49,10 @@ export const getUserEntries = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 }) // -1 for descending order (newest first)
       .exec();
 
-    // Return entries without the hashed content
-    const sanitizedEntries = entries.map((entry) => {
-      const sanitized = entry.toObject() as SanitizedEntry;
-      return sanitized;
-    });
+    // The getter will automatically return the original content
+    const sanitizedEntries = entries.map(
+      (entry) => entry.toObject() as SanitizedEntry
+    );
 
     res.json(sanitizedEntries);
   } catch (error) {
@@ -81,11 +76,8 @@ export const getEntry = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Entry not found" });
     }
 
-    // Return entry with original content
-    const sanitizedEntry = {
-      ...entry.toObject(),
-      content: entry._originalContent,
-    } as SanitizedEntry;
+    // The getter will automatically return the original content
+    const sanitizedEntry = entry.toObject() as SanitizedEntry;
 
     res.json(sanitizedEntry);
   } catch (error) {
@@ -106,10 +98,7 @@ export const updateEntry = async (req: Request, res: Response) => {
 
     const entry = await Entry.findOneAndUpdate(
       { _id: id, user: userId },
-      {
-        content,
-        _originalContent: content,
-      },
+      { content },
       { new: true }
     );
 
@@ -117,11 +106,8 @@ export const updateEntry = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Entry not found" });
     }
 
-    // Return entry with original content
-    const sanitizedEntry = {
-      ...entry.toObject(),
-      content: entry._originalContent,
-    } as SanitizedEntry;
+    // The getter will automatically return the original content
+    const sanitizedEntry = entry.toObject() as SanitizedEntry;
 
     res.json(sanitizedEntry);
   } catch (error) {
